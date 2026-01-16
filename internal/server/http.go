@@ -19,6 +19,10 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 		DB: db,
 	}
 
+	chatHandler := &ChatHandler{
+		DB: db,
+	}
+
 	mux.HandleFunc("/auth/register", authHandler.Register)
 	mux.HandleFunc("/auth/login", authHandler.Login)
 
@@ -27,6 +31,11 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 	mux.Handle(
 		"/users/me",
 		protected(http.HandlerFunc(userHandler.Me)),
+	)
+
+	mux.Handle(
+		"/chats/{userId}",
+		protected(http.HandlerFunc(chatHandler.History)),
 	)
 
 	msgService := &websocket.MessageService{
