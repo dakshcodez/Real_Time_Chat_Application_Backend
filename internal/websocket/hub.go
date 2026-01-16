@@ -2,20 +2,23 @@ package websocket
 
 import (
 	"encoding/json"
-	"time"
+	//"time"
 )
 
 type Hub struct {
 	users      map[string]map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
+
+	messageService *MessageService
 }
 
-func NewHub() *Hub {
+func NewHub(messageService *MessageService) *Hub {
 	return &Hub{
-		users:      make(map[string]map[*Client]bool),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
+		users:           make(map[string]map[*Client]bool),
+		register:        make(chan *Client),
+		unregister:      make(chan *Client),
+		messageService:  messageService,
 	}
 }
 
@@ -50,15 +53,27 @@ func (h *Hub) routeMessage(sender *Client, raw []byte) {
 		return
 	}
 
+	//Persist message
+	saved, err := h.messageService.SaveMessage(
+		sender.UserID,
+		msg.To,
+		msg.Content,
+	)
+	if err != nil {
+		return
+	}
+
+	//Build outgoing message
 	out := OutgoingMessage{
 		Type:      "direct_message",
 		From:      sender.UserID,
-		Content:   msg.Content,
-		Timestamp: time.Now().Unix(),
+		Content:   saved.Content,
+		Timestamp: saved.CreatedAt.Unix(),
 	}
 
 	data, _ := json.Marshal(out)
 
+	//Deliver if receiver is online
 	if receivers, ok := h.users[msg.To]; ok {
 		for c := range receivers {
 			c.Send <- data

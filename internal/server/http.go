@@ -29,7 +29,11 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 		protected(http.HandlerFunc(userHandler.Me)),
 	)
 
-	hub := websocket.NewHub()
+	msgService := &websocket.MessageService{
+	DB: db,
+	}
+
+	hub := websocket.NewHub(msgService)
 	go hub.Run()
 
 	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
