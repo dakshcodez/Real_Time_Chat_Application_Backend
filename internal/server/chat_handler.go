@@ -57,7 +57,7 @@ func (h *ChatHandler) History(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 5️⃣ Build response
+	// Build response
 	type MessageResponse struct {
 		ID        uuid.UUID `json:"id"`
 		From      uuid.UUID `json:"from"`
