@@ -34,6 +34,11 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 	)
 
 	mux.Handle(
+		"/users/me/update",
+		protected(http.HandlerFunc(userHandler.UpdateMe)),
+	)
+
+	mux.Handle(
 		"/chats/{userId}",
 		protected(http.HandlerFunc(chatHandler.History)),
 	)
