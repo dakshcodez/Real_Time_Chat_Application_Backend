@@ -69,7 +69,7 @@ A production-ready backend implementation for a real-time one-to-one chat applic
 ## Project Structure
 
 ```
-gdg_chat_app_backend_task/
+real_time_chat_application_backend/
 ├── cmd/
 │   └── server/
 │       └── main.go              # Application entry point
