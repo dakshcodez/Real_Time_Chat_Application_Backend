@@ -80,3 +80,13 @@ func (h *Hub) routeMessage(sender *Client, raw []byte) {
 		}
 	}
 }
+
+func (h *Hub) BroadcastToUsers(userIDs []string, data []byte) {
+	for _, uid := range userIDs {
+		if conns, ok := h.users[uid]; ok {
+			for c := range conns {
+				c.Send <- data
+			}
+		}
+	}
+}

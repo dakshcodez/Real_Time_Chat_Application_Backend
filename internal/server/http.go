@@ -27,8 +27,12 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 		DB: db,
 	}
 
+	hub := websocket.NewHub(msgService)
+	go hub.Run()
+
 	messageHandler := &MessageHandler{
 		Service: msgService,
+		Hub:	 hub,
 	}
 
 	mux.HandleFunc("/auth/register", authHandler.Register)
@@ -60,9 +64,6 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 		"/messages/{messageId}/delete",
 		protected(http.HandlerFunc(messageHandler.Delete)),
 	)
-
-	hub := websocket.NewHub(msgService)
-	go hub.Run()
 
 	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		websocket.ServeWS(hub, jwtSecret, w, r)

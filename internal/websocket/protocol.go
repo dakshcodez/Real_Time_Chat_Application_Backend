@@ -7,8 +7,9 @@ type IncomingMessage struct {
 }
 
 type OutgoingMessage struct {
-	Type      string `json:"type"` // "direct_message"
-	From      string `json:"from"`
-	Content   string `json:"content"`
-	Timestamp int64  `json:"timestamp"`
+	Type      string `json:"type"`               // event type
+	ID        string `json:"id,omitempty"`       // message id
+	From      string `json:"from,omitempty"`     // sender
+	Content   string `json:"content,omitempty"`  // message text
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
