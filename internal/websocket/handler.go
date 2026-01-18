@@ -2,8 +2,10 @@ package websocket
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/auth"
+	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/ratelimit"
 	"github.com/gorilla/websocket"
 )
 
@@ -31,11 +33,14 @@ func ServeWS(hub *Hub, secret string, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	msgLimiter := ratelimit.New(10, time.Second)
+
 	client := &Client{
 		UserID: userID.String(),
 		Conn:   conn,
 		Send:   make(chan []byte, 256),
 		Hub:    hub,
+		Limiter: msgLimiter,
 	}
 
 	hub.register <- client

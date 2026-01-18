@@ -3,6 +3,7 @@ package websocket
 import (
 	"time"
 
+	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/ratelimit"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,6 +17,7 @@ type Client struct {
 	Conn   *websocket.Conn
 	Send   chan []byte
 	Hub    *Hub
+	Limiter *ratelimit.Limiter
 }
 
 func (c *Client) readPump() {
@@ -35,6 +37,12 @@ func (c *Client) readPump() {
 		if err != nil {
 			break
 		}
+
+		if !c.Limiter.Allow(c.UserID) {
+			// silently drop or optionally notify
+			continue
+		}
+
 		c.Hub.routeMessage(c, msg)
 	}
 }
