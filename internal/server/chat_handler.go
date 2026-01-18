@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/middleware"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/websocket"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/middleware"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/websocket"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )

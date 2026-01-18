@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/models"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

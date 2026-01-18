@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/config"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/db"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/server"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/config"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/db"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/server"
 	"github.com/joho/godotenv"
 )
 

@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/auth"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/middleware"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/ratelimit"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/websocket"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/auth"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/middleware"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/ratelimit"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/websocket"
 	"gorm.io/gorm"
 )
 

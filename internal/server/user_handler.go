@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/middleware"
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/models"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/middleware"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )

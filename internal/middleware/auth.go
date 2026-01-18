@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/auth"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/auth"
 )
 
 type contextKey string

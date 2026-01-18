@@ -1,4 +1,4 @@
-module github.com/dakshcodez/gdg_chat_app_backend_task
+module github.com/dakshcodez/real_time_chat_application_backend
 
 go 1.24.5
 

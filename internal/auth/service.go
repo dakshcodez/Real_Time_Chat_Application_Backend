@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/dakshcodez/gdg_chat_app_backend_task/internal/models"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
