@@ -287,7 +287,7 @@ Authorization: Bearer <JWT_TOKEN>
 #### Connect to WebSocket
 
 ```
-ws://localhost:8080/ws?token=<JWT_TOKEN>
+wscat -c "ws://localhost:8080/ws?token=<JWT_TOKEN>"
 ```
 
 The WebSocket connection requires a valid JWT token as a query parameter. The connection will be rejected if the token is missing or invalid.
@@ -297,7 +297,7 @@ The WebSocket connection requires a valid JWT token as a query parameter. The co
 ```json
 {
   "type": "direct_message",
-  "to": "770e8400-e29b-41d4-a716-446655440001",
+  "to": "<RECEIVER_ID>",
   "content": "Hello, this is a test message"
 }
 ```
@@ -307,7 +307,7 @@ The WebSocket connection requires a valid JWT token as a query parameter. The co
 ```json
 {
   "type": "direct_message",
-  "from": "550e8400-e29b-41d4-a716-446655440000",
+  "from": "<SENDER_ID>",
   "content": "Hello, this is a test message",
   "timestamp": 1705312800
 }
