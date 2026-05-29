@@ -1,0 +1,3 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/dakshcodez/Real_Time_Chat_Application_Frontend.git
