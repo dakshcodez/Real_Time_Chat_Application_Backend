@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: courier-chat-backend
+    runtime: go
+    buildCommand: go build -o server cmd/server/main.go
+    startCommand: ./server
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
