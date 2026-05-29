@@ -24,7 +24,7 @@ func (h *UserHandler) Me(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Return safe fields only
-	response := map[string]interface{}{
+	response := map[string]any{
 		"id":       user.ID,
 		"username": user.Username,
 		"email":    user.Email,
@@ -50,7 +50,7 @@ func (h *UserHandler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Build update map (partial updates allowed)
-	updates := map[string]interface{}{}
+	updates := map[string]any{}
 
 	if body.Username != nil {
 		updates["username"] = *body.Username

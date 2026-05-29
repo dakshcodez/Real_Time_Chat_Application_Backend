@@ -46,27 +46,27 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 
 	mux.Handle(
 		"/users/me",
-		rateLimit(protected(http.HandlerFunc(userHandler.Me))),
+		protected(rateLimit(http.HandlerFunc(userHandler.Me))),
 	)
 
 	mux.Handle(
 		"/users/me/update",
-		rateLimit(protected(http.HandlerFunc(userHandler.UpdateMe))),
+		protected(rateLimit(http.HandlerFunc(userHandler.UpdateMe))),
 	)
 
 	mux.Handle(
 		"/chats/{userId}",
-		rateLimit(protected(http.HandlerFunc(chatHandler.History))),
+		protected(rateLimit(http.HandlerFunc(chatHandler.History))),
 	)
 
 	mux.Handle(
 		"/messages/{messageId}",
-		rateLimit(protected(http.HandlerFunc(messageHandler.Edit))),
+		protected(rateLimit(http.HandlerFunc(messageHandler.Edit))),
 	)
 
 	mux.Handle(
 		"/messages/{messageId}/delete",
-		rateLimit(protected(http.HandlerFunc(messageHandler.Delete))),
+		protected(rateLimit(http.HandlerFunc(messageHandler.Delete))),
 	)
 
 	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {

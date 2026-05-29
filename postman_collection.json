@@ -1,0 +1,354 @@
+{
+  "info": {
+    "_postman_id": "chat-app-backend-collection-id",
+    "name": "Real-Time Chat Application Backend",
+    "description": "Postman collection to test and interact with the Real-Time Chat Application Backend. Features automatic authentication token configuration and full coverage of the REST API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registers a new user on the chat platform."
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response && response.token) {",
+                  "    pm.collectionVariables.set(\"token\", response.token);",
+                  "    console.log(\"Saved JWT to collection variables.\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates a user and retrieves a JWT token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get Current User Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            },
+            "description": "Fetches the details of the currently authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser_updated\",\n  \"email\": \"testuser_new@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "update"
+              ]
+            },
+            "description": "Updates fields (username and/or email) of the currently authenticated user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chat & History",
+      "item": [
+        {
+          "name": "Get Chat History with User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/chats/{{other_user_id}}?limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chats",
+                "{{other_user_id}}"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of messages to fetch (max 100)"
+                },
+                {
+                  "key": "before",
+                  "value": "",
+                  "description": "Fetch messages sent before this unix timestamp",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Fetches historical messages exchanged between the authenticated user and the specified recipient user ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Message Actions",
+      "item": [
+        {
+          "name": "Edit Message",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is my edited message!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/messages/{{message_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "messages",
+                "{{message_id}}"
+              ]
+            },
+            "description": "Edits the content of an existing message if the current authenticated user is the sender."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message (Soft Delete)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/messages/{{message_id}}/delete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "messages",
+                "{{message_id}}",
+                "delete"
+              ]
+            },
+            "description": "Soft deletes a message if the current authenticated user is the sender."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WebSocket Connection",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{ws_url}}/ws?token={{token}}",
+          "host": [
+            "{{ws_url}}"
+          ],
+          "path": [
+            "ws"
+          ],
+          "query": [
+            {
+              "key": "token",
+              "value": "{{token}}"
+            }
+          ]
+        },
+        "description": "Establish a WebSocket connection. In Postman, you can use the WebSocket request type using this URL.\n\nIncoming Message Format:\n```json\n{\n  \"type\": \"direct_message\",\n  \"to\": \"<recipient-user-uuid>\",\n  \"content\": \"hello there!\"\n}\n```"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "ws_url",
+      "value": "ws://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "other_user_id",
+      "value": "paste-recipient-user-uuid-here",
+      "type": "string"
+    },
+    {
+      "key": "message_id",
+      "value": "paste-message-uuid-here",
+      "type": "string"
+    }
+  ]
+}
