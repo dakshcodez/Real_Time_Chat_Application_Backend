@@ -14,11 +14,14 @@ type Handler struct {
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Username string
-		Email    string
-		Password string 
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
-	json.NewDecoder(r.Body).Decode(&body)
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
 
 	err := Register(h.DB, body.Username, body.Email, body.Password)
 	if err != nil {
@@ -31,10 +34,13 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Email    string
-		Password string
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
-	json.NewDecoder(r.Body).Decode(&body)
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
 
 	user, err := Login(h.DB, body.Email, body.Password)
 	if err != nil {

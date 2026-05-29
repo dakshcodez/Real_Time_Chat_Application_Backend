@@ -3,8 +3,10 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/middleware"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/models"
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/websocket"
 	"github.com/google/uuid"
 )
@@ -96,4 +98,47 @@ func (h *MessageHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	// REST response
 	json.NewEncoder(w).Encode(msg)
+}
+
+func (h *MessageHandler) MarkRead(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(middleware.UserIDKey).(uuid.UUID)
+
+	messageID, err := uuid.Parse(r.PathValue("messageId"))
+	if err != nil {
+		http.Error(w, "invalid message id", http.StatusBadRequest)
+		return
+	}
+
+	var msg models.Message
+	if err := h.Service.DB.First(&msg, "id = ?", messageID).Error; err != nil {
+		http.Error(w, "message not found", http.StatusNotFound)
+		return
+	}
+
+	// Verify current user is receiver
+	if msg.ReceiverID != userID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	if !msg.IsRead {
+		now := time.Now()
+		msg.IsRead = true
+		msg.ReadAt = &now
+		if err := h.Service.DB.Save(&msg).Error; err != nil {
+			http.Error(w, "failed to update message", http.StatusInternalServerError)
+			return
+		}
+
+		// Broadcast conversation_read event to both users
+		event := map[string]any{
+			"type":      "conversation_read",
+			"reader_id": userID.String(),
+			"user_id":   msg.SenderID.String(),
+		}
+		data, _ := json.Marshal(event)
+		h.Hub.BroadcastToUsers([]string{msg.SenderID.String(), userID.String()}, data)
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

@@ -7,9 +7,11 @@ type IncomingMessage struct {
 }
 
 type OutgoingMessage struct {
-	Type      string `json:"type"`               // event type
-	ID        string `json:"id,omitempty"`       // message id
-	From      string `json:"from,omitempty"`     // sender
-	Content   string `json:"content,omitempty"`  // message text
-	Timestamp int64  `json:"timestamp,omitempty"`
+	Type           string `json:"type"`                         // event type
+	ID             string `json:"id,omitempty"`                 // message id
+	From           string `json:"from,omitempty"`               // sender
+	To             string `json:"to,omitempty"`                 // receiver
+	Content        string `json:"content,omitempty"`            // message text
+	Timestamp      int64  `json:"timestamp,omitempty"`
+	SenderUsername string `json:"sender_username,omitempty"`    // sender username
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/auth"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/models"
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/ratelimit"
 	"github.com/gorilla/websocket"
 )
@@ -35,12 +36,19 @@ func ServeWS(hub *Hub, secret string, w http.ResponseWriter, r *http.Request) {
 
 	msgLimiter := ratelimit.New(10, time.Second)
 
+	var user models.User
+	username := "User"
+	if err := hub.messageService.DB.First(&user, "id = ?", userID).Error; err == nil {
+		username = user.Username
+	}
+
 	client := &Client{
-		UserID: userID.String(),
-		Conn:   conn,
-		Send:   make(chan []byte, 256),
-		Hub:    hub,
-		Limiter: msgLimiter,
+		UserID:   userID.String(),
+		Username: username,
+		Conn:     conn,
+		Send:     make(chan []byte, 256),
+		Hub:      hub,
+		Limiter:  msgLimiter,
 	}
 
 	hub.register <- client

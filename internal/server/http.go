@@ -21,20 +21,21 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 		Secret: jwtSecret,
 	}
 
+	hub := websocket.NewHub(msgService)
+	go hub.Run()
+
 	userHandler := &UserHandler{
 		DB: db,
 	}
 
 	chatHandler := &ChatHandler{
-		DB: db,
+		DB:  db,
+		Hub: hub,
 	}
-
-	hub := websocket.NewHub(msgService)
-	go hub.Run()
 
 	messageHandler := &MessageHandler{
 		Service: msgService,
-		Hub:	 hub,
+		Hub:     hub,
 	}
 
 	mux.HandleFunc("/auth/register", authHandler.Register)
@@ -55,6 +56,26 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 	)
 
 	mux.Handle(
+		"GET /users/search",
+		protected(rateLimit(http.HandlerFunc(userHandler.Search))),
+	)
+
+	mux.Handle(
+		"GET /conversations",
+		protected(rateLimit(http.HandlerFunc(chatHandler.Conversations))),
+	)
+
+	mux.Handle(
+		"POST /conversations",
+		protected(rateLimit(http.HandlerFunc(chatHandler.CreateConversation))),
+	)
+
+	mux.Handle(
+		"POST /conversations/{userId}/read",
+		protected(rateLimit(http.HandlerFunc(chatHandler.MarkConversationRead))),
+	)
+
+	mux.Handle(
 		"/chats/{userId}",
 		protected(rateLimit(http.HandlerFunc(chatHandler.History))),
 	)
@@ -62,6 +83,11 @@ func RegisterRoutes(mux *http.ServeMux, db *gorm.DB, jwtSecret string) {
 	mux.Handle(
 		"/messages/{messageId}",
 		protected(rateLimit(http.HandlerFunc(messageHandler.Edit))),
+	)
+
+	mux.Handle(
+		"POST /messages/{messageId}/read",
+		protected(rateLimit(http.HandlerFunc(messageHandler.MarkRead))),
 	)
 
 	mux.Handle(

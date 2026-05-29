@@ -89,3 +89,30 @@ func (h *UserHandler) UpdateMe(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response)
 }
+
+func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("q")
+	if q == "" {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode([]any{})
+		return
+	}
+
+	var users []models.User
+	if err := h.DB.Limit(20).Find(&users, "username LIKE ? OR email LIKE ?", "%"+q+"%", "%"+q+"%").Error; err != nil {
+		http.Error(w, "failed to search users", http.StatusInternalServerError)
+		return
+	}
+
+	var response []map[string]any
+	for _, user := range users {
+		response = append(response, map[string]any{
+			"id":       user.ID,
+			"username": user.Username,
+			"email":    user.Email,
+		})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}

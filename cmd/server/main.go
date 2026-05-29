@@ -6,6 +6,7 @@ import (
 
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/config"
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/db"
+	"github.com/dakshcodez/real_time_chat_application_backend/internal/middleware"
 	"github.com/dakshcodez/real_time_chat_application_backend/internal/server"
 	"github.com/joho/godotenv"
 )
@@ -22,6 +23,9 @@ func main() {
 	mux := http.NewServeMux()
 	server.RegisterRoutes(mux, dbConn, cfg.JWTSecret)
 
+	// Wrap the mux with the CORS middleware
+	handler := middleware.CORS(mux)
+
 	log.Println("Server running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

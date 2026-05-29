@@ -10,8 +10,19 @@ import (
 )
 
 func Register(db *gorm.DB, username, email, password string) error {
+	username = strings.TrimSpace(username)
 	email = strings.ToLower(strings.TrimSpace(email))
 	password = strings.TrimSpace(password)
+
+	if username == "" {
+		return errors.New("username is required")
+	}
+	if email == "" {
+		return errors.New("email is required")
+	}
+	if password == "" {
+		return errors.New("password is required")
+	}
 
 	hash, err := bcrypt.GenerateFromPassword(
 		[]byte(password),
