@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	pongWait   = 60 * time.Second
-	pingPeriod = 50 * time.Second
+	pongWait   = 30 * time.Second
+	pingPeriod = 22 * time.Second
 )
 
 type Client struct {
